@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<%- include('partials/header.ejs', { title: 'Home' , }) %>
+
+    <body>
+        <main>
+            <form id="form">
+                <h3>Form</h3>
+                <div class="form-row">
+                    <label for="name">Name</label>
+                    <input type="text" name="name" id="name" autocomplete="false" />
+                </div>
+                <div class="form-row">
+                    <label for="password">Password</label>
+                    <input type="password" name="password" id="password" autocomplete="false" />
+                </div>
+                <button type="submit" class="block">submit</button>
+            </form>
+
+        </main>
+    </body>
+
+    <script>
+        const form = document.getElementById('form')
+        form.addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            const formData = new FormData(form)
+            let xhr = new XMLHttpRequest();
+            xhr.open("POST", '/users/login', true);
+            xhr.setRequestHeader("Content-Type", "application/json");
+            xhr.send(JSON.stringify(Object.fromEntries(formData)));
+
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === XMLHttpRequest.DONE) {
+                    if (xhr.status >= 400 && xhr.status < 500) {
+                        alert(JSON.parse(xhr.responseText).errors.join('\n'))
+                    } else if (xhr.status === 200) {
+                        window.location.href = '/welcome'
+                    }
+                }
+            }
+        })
+    </script>
+
+</html>
